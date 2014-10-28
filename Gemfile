@@ -1,2 +1,4 @@
+source 'https://rubygems.org'
+
 gem 'gosu'
-gem 'gosu-texture-packer'
+gem 'gosu_texture_packer'
