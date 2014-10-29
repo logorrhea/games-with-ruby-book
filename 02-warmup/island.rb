@@ -25,4 +25,21 @@ class GameWindow < Gosu::Window
         self.caption = "#{Gosu.fps} FPS. Use arrow keys to pan"
     end
 
+    def draw
+        @first_render = false
+        @map.draw(@x, @y)
+    end
+
+    def needs_redraw?
+        [Gosu::KbLeft,
+         Gosu::KbRight,
+         Gosu::KbUp,
+         Gosu::KbDown].each do |b|
+             return true if button_down?(b)
+         end
+         @first_render
+    end
+
 end
+
+GameWindow.new.show
