@@ -1,5 +1,5 @@
 class Explosion
-    FRAME_DELAY = 10 #ms
+    FRAME_DELAY = 16.66 #ms
 
     def animation
         @@animation ||= Gosu::Image.load_tiles(
@@ -18,7 +18,7 @@ class Explosion
     end
 
     def update
-        @current_frame += 1 if frame_expired?
+        advance_frame
     end
 
     def draw
@@ -46,6 +46,15 @@ class Explosion
         if (now - @last_frame) > FRAME_DELAY
             @last_frame = now
         end
+    end
+
+    # Updates the animation frame, compensating for
+    # low frame rate
+    def advance_frame
+        now = Gosu.milliseconds
+        delta = now - (@last_frame ||= now)
+        @last_frame = now if delta > FRAME_DELAY
+        @current_frame += (delta / FRAME_DELAY).floor
     end
 
 end
