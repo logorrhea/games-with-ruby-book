@@ -7,13 +7,6 @@ class Camera
         @zoom = 1
     end
 
-    def can_view?(x, y, obj)
-        return true
-        x0, x1, y0, y1 = viewport
-        (x0 - obj.width..x1).include?(x) &&
-            (y0 - obj.height..y1).include?(y)
-    end
-
     def coords
         [@x, @y]
     end
@@ -69,8 +62,6 @@ class Camera
             x, y - 10, Gosu::Color::RED,
             x, y + 10, Gosu::Color::RED, 100)
     end
-
-    private
 
     def viewport
         x0 = @x - ($window.width / 2) / @zoom

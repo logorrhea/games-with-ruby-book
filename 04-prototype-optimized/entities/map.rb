@@ -16,8 +16,6 @@ class Map
         while true
             x = rand(0..MAP_WIDTH * TILE_SIZE)
             y = rand(0..MAP_HEIGHT * TILE_SIZE)
-            #x = rand(0..MAP_WIDTH)
-            #y = rand(0..MAP_HEIGHT)
             if can_move_to?(x, y)
                 return [x, y]
             else
@@ -32,12 +30,14 @@ class Map
     end
 
     def draw(camera)
-        @map.each do |x, row|
-            row.each do |y, val|
-                tile = @map[x][y]
-                map_x = x * TILE_SIZE
-                map_y = y * TILE_SIZE
-                tile.draw(map_x, map_y, 0)
+        x0, x1, y0, y1 = camera.viewport.map! { |p| (p / TILE_SIZE).to_i }
+        (x0..x1).each do |x|
+            (y0..y1).each do |y|
+                row = @map[x]
+                if row
+                    tile = @map[x][y]
+                    tile.draw(x * TILE_SIZE, y * TILE_SIZE, 0)
+                end
             end
         end
     end

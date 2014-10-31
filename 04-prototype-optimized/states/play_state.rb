@@ -1,4 +1,4 @@
-require 'ruby-prof'
+require 'ruby-prof' if ENV['ENABLE_PROFILING']
 
 require_relative '../entities/map'
 require_relative '../entities/tank'
@@ -22,8 +22,7 @@ class PlayState < GameState
         @bullets.map(&:update)
         @bullets.reject!(&:done?)
         @camera.update
-        $window.caption = 'Tanks Prototype. ' <<
-        "[FPS: #{Gosu.fps}. Tanks @ #{@tank.x.round}:#{@tank.y.round}]"
+        update_caption
     end
 
     def draw
@@ -53,13 +52,27 @@ class PlayState < GameState
     end
 
     def enter
-        RubyProf.start
+        if ENV['ENABLE_PROFILING']
+            RubyProf.start
+        end
     end
 
     def leave
-        result = RubyProf.stop
-        printer = RubyProf::FlatPrinter.new(result)
-        printer.print(STDOUT)
+        if ENV['ENABLE_PROFILING']
+            result = RubyProf.stop
+            printer = RubyProf::FlatPrinter.new(result)
+            printer.print(STDOUT)
+        end
     end
+    
+    private
 
+    def update_caption
+        now = Gosu.milliseconds
+        if now - (@caption_updated_at || 0) > 1000
+            $window.caption = 'Tanks Prototype. ' <<
+                "[FPS: #{Gosu.fps}. Tank @ #{@tank.x.round}:#{@tank.y.round}]"
+            @caption_updated_at = now
+        end
+    end
 end
