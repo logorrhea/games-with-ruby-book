@@ -16,6 +16,8 @@ class Map
         while true
             x = rand(0..MAP_WIDTH * TILE_SIZE)
             y = rand(0..MAP_HEIGHT * TILE_SIZE)
+            #x = rand(0..MAP_WIDTH)
+            #y = rand(0..MAP_HEIGHT)
             if can_move_to?(x, y)
                 return [x, y]
             else
@@ -47,7 +49,6 @@ class Map
     def tile_at(x, y)
         t_x = ((x / TILE_SIZE) % TILE_SIZE).floor
         t_y = ((y / TILE_SIZE) % TILE_SIZE).floor
-        puts "Tile: #{t_x},#{t_y}"
         row = @map[t_x]
         row[t_y] if row
     end

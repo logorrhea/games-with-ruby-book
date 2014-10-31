@@ -73,9 +73,9 @@ class Camera
 
     def viewport
         x0 = @x - ($window.width / 2) / @zoom
-        x1 = @x - ($window.width / 2) / @zoom
+        x1 = @x + ($window.width / 2) / @zoom
         y0 = @y - ($window.height / 2) / @zoom
-        y1 = @y - ($window.height / 2) / @zoom
+        y1 = @y + ($window.height / 2) / @zoom
         [x0, x1, y0, y1]
     end
 

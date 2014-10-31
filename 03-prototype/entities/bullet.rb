@@ -2,7 +2,7 @@ class Bullet
 
     COLOR = Gosu::Color::BLACK
     MAX_DIST = 300
-    START_DIST = 200
+    START_DIST = 20
 
     def initialize(source_x, source_y, target_x, target_y)
         @x, @y = source_x, source_y
@@ -59,10 +59,9 @@ class Bullet
     end
 
     def trajectory_length
-        @traj_length if @traj_length
         d_x = @target_x - @x
         d_y = @target_y - @y
-        @traj_length ||= Math.sqrt(d_x * d_x + d_y * d_y)
+        Math.sqrt(d_x * d_x + d_y * d_y)
     end
 
     def point_at_distance(distance)

@@ -26,7 +26,6 @@ class PlayState < GameState
 
     def draw
         cam_x, cam_y = @camera.coords
-        puts "Camera coords: #{cam_x},#{cam_y}"
         off_x = $window.width / 2 - cam_x
         off_y = $window.height / 2 - cam_y
         $window.translate(off_x, off_y) do
