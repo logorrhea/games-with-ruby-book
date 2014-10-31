@@ -1,7 +1,7 @@
 class Camera
     attr_accessor :x, :y, :zoom
 
-    def initialize(target)
+    def target=(target)
         @target = target
         @x, @y = target.x, target.y
         @zoom = 1
@@ -22,20 +22,20 @@ class Camera
 
     def update
         # Adjust camera to position of its target
-        shift = Game.adjust_speed(@target.speed)
+        shift = Utils.adjust_speed(@target.physics.speed)
         @x += shift if @x < @target.x - $window.width / 4
         @x -= shift if @x > @target.x + $window.width / 4
         @y += shift if @y < @target.y - $window.height / 4
         @y -= shift if @y > @target.y + $window.height / 4 
 
         zoom_delta = @zoom > 0 ? 0.01 : 1.0
-        zoom_delta = Game.adjust_speed(zoom_delta)
+        zoom_delta = Utils.adjust_speed(zoom_delta)
         if $window.button_down?(Gosu::KbUp)
             @zoom -= zoom_delta unless @zoom < 0.7
         elsif $window.button_down?(Gosu::KbDown)
             @zoom += zoom_delta unless @zoom > 10
         else
-            target_zoom = @target.speed > 1.1 ? 0.85 : 1.0
+            target_zoom = @target.physics.speed > 1.1 ? 0.85 : 1.0
             if @zoom <= (target_zoom - 0.01)
                 @zoom += zoom_delta / 3
             elsif @zoom > (target_zoom + 0.01)

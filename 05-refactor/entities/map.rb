@@ -29,8 +29,8 @@ class Map
         tile && tile != @water
     end
 
-    def draw(camera)
-        x0, x1, y0, y1 = camera.viewport.map! { |p| (p / TILE_SIZE).to_i }
+    def draw(viewport)
+        x0, x1, y0, y1 = viewport.map! { |p| (p / TILE_SIZE).to_i }
         (x0..x1).each do |x|
             (y0..y1).each do |y|
                 row = @map[x]
@@ -53,12 +53,12 @@ class Map
 
     def load_tiles
         tiles = Gosu::Image.load_tiles(
-            $window, Game.media_path('ground.png'),
+            $window, Utils.media_path('ground.png'),
             128, 128, true)
         @sand = tiles[0]
         @grass = tiles[8]
         @water = Gosu::Image.new(
-            $window, Game.media_path('water.png'), true)
+            $window, Utils.media_path('water.png'), true)
     end
 
     def generate_map

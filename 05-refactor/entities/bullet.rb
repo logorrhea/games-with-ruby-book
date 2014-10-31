@@ -1,4 +1,4 @@
-class Bullet
+class Bullet < GameObject
 
     attr_accessor :x, :y, :target_x, :target_y, :speed, :fired_at
 

@@ -1,26 +1,35 @@
 require 'ruby-prof' if ENV['ENABLE_PROFILING']
 
-require_relative '../entities/map'
-require_relative '../entities/tank'
-require_relative '../entities/camera'
-require_relative '../entities/bullet'
-require_relative '../entities/explosion'
-
 class PlayState < GameState
+    attr_accessor :update_interval
     
     def initialize
         @map = Map.new
-        @tank = Tank.new(@map)
-        @camera = Camera.new(@tank)
-        @bullets = []
-        @explosions = []
+        @camera = Camera.new
+        @object_pool = ObjectPool.new(@map)
+        @tank = Tank.new(@object_pool, PlayerInput.new(@camera))
+        @camera.target = @tank
+
+        #50.times do
+            #Tank.new(@object_pool, AiInput.new)
+        #end
+    end
+    
+    def enter
+        RubyProf.start if ENV['ENABLE_PROFILING']
+    end
+
+    def leave
+        if ENV['ENABLE_PROFILING']
+            result = RubyProf.stop
+            printer = RubyProf::FlatPrinter.new(result)
+            printer.print(STDOUT)
+        end
     end
 
     def update
-        bullet = @tank.update(@camera)
-        @bullets << bullet if bullet
-        @bullets.map(&:update)
-        @bullets.reject!(&:done?)
+        @object_pool.objects.map(&:update)
+        @object_pool.objects.reject!(&:removable?)
         @camera.update
         update_caption
     end
@@ -29,39 +38,24 @@ class PlayState < GameState
         cam_x, cam_y = @camera.coords
         off_x = $window.width / 2 - cam_x
         off_y = $window.height / 2 - cam_y
+        viewport = @camera.viewport
+        zoom = @camera.zoom
         $window.translate(off_x, off_y) do
-            zoom = @camera.zoom
             $window.scale(zoom, zoom, cam_x, cam_y) do
-                @map.draw(@camera)
-                @tank.draw
-                @bullets.map(&:draw)
+                @map.draw(viewport)
+                @object_pool.objects.map { |o| o.draw(viewport) }
             end
         end
         @camera.draw_crosshair
     end
 
     def button_down(id)
-        if id == Gosu::MsLeft
-            bullet = @tank.shoot(*@camera.mouse_coords)
-            @bullets << bullet if bullet
+        if id == Gosu::KbQ
+            leave
+            $window.close
         end
-        $window.close if id == Gosu::KbQ
         if id == Gosu::KbEscape
             GameState.switch(MenuState.instance)
-        end
-    end
-
-    def enter
-        if ENV['ENABLE_PROFILING']
-            RubyProf.start
-        end
-    end
-
-    def leave
-        if ENV['ENABLE_PROFILING']
-            result = RubyProf.stop
-            printer = RubyProf::FlatPrinter.new(result)
-            printer.print(STDOUT)
         end
     end
     
