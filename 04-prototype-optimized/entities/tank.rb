@@ -38,10 +38,11 @@ class Tank
 
         # Move the tank!
         new_x, new_y = @x, @y
-        new_x -= speed if $window.button_down?(Gosu::KbA)
-        new_x += speed if $window.button_down?(Gosu::KbD)
-        new_y -= speed if $window.button_down?(Gosu::KbW)
-        new_y += speed if $window.button_down?(Gosu::KbS)
+        shift = Game.adjust_speed(speed)
+        new_x -= shift if $window.button_down?(Gosu::KbA)
+        new_x += shift if $window.button_down?(Gosu::KbD)
+        new_y -= shift if $window.button_down?(Gosu::KbW)
+        new_y += shift if $window.button_down?(Gosu::KbS)
         if @map.can_move_to?(new_x, new_y)
             @x, @y = new_x, new_y
         else
